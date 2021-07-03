@@ -4,14 +4,14 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("car", "./assets/test-car.png");
+        this.load.image("phoenix", "./assets/Phoenix.png");
         this.load.image("ob", "./assets/test-ob.png");
         this.load.image("flames", "./assets/test-flames.png");
     }
 
     create() {
         this.obstacleSpeed = 250;
-        this.bounceSpeed = 3;
+        this.bounceSpeed = 5;
 
         // add keybinds
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -20,7 +20,7 @@ class Play extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         
         //create player
-        player = this.physics.add.sprite(32, game.config.width / 2, 'car').setOrigin(0, 0);
+        player = this.physics.add.sprite(32, game.config.width / 2, "phoenix").setOrigin(0, 0);
         player.setCollideWorldBounds(true);
         player.setBounce(0.5);
         player.setImmovable();
@@ -28,6 +28,7 @@ class Play extends Phaser.Scene {
         player.setDragX(700);
         player.setDragY(700);
         player.destroyed = false;
+        player.bounce = false;
 
         //set up obstacle group
         this.obstacleGroup = this.add.group({
@@ -40,7 +41,7 @@ class Play extends Phaser.Scene {
         });
 
         // create flame wall
-        this.flameWall = new Flames(this, 0, game.config.height - (borderUISize + borderPadding), "flames").setOrigin(0, 0.5);
+        //this.flameWall = new Flames(this, 0, game.config.height - (borderUISize + borderPadding), "flames").setOrigin(0, 0.5);
 
         // play borders
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -50,14 +51,12 @@ class Play extends Phaser.Scene {
         
         // game over flag (when true, game ends)
         this.gameOver = false;
-        this.physics.add.collider("car", "ob");
     }
 
      // create obstacles and add them to obstacle group
      addObstacle() {
         let speedVariance = Phaser.Math.Between(0, 100);
         let obstacle = new Obstacle(this, this.obstacleSpeed + speedVariance);
-        
         this.obstacleGroup.add(obstacle);
     }
 
@@ -88,27 +87,27 @@ class Play extends Phaser.Scene {
                 player.body.velocity.x += playerVelocity;
             }
             // up and down player movement
-            if(keyUP.isDown) {
-                player.body.velocity.y -= playerVelocity;
-    
-            }else if(keyDOWN.isDown) {
-                player.body.velocity.y += playerVelocity;
+            if(!player.bounce) {
+                if(keyUP.isDown) {
+                    player.body.velocity.y -= playerVelocity;
+        
+                }else if(keyDOWN.isDown) {
+                    player.body.velocity.y += playerVelocity;
+                }
             }
             this.physics.world.collide(player, this.obstacleGroup, this.playerCollision, null, this); 
         } 
+
+        if(player.bounce) {
+            player.y += this.bounceSpeed;
+            this.bounceDistance = this.time.delayedCall(300, () => {
+                player.bounce = false;
+            });
+        }
     }
 
     playerCollision() {
         player.bounce = true;
-        player.y += this.bounceSpeed;
-        this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', overText). setOrigin(0.5);
-        if(player.bounce) {
-            
-            
-            this.bounceDistance = this.time.delayedCall(200, () => {
-                player.bounce = false;
-            });
-        }
     }
     // function that checks if player is touching another object
     // collisionCheck(player, object) {
