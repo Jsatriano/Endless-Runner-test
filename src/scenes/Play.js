@@ -5,15 +5,21 @@ class Play extends Phaser.Scene {
 
     preload() {
         this.load.image("phoenix", "./assets/Phoenix.png");
-        this.load.image("ob", "./assets/test-ob.png");
+        this.load.image("ob", "./assets/Obstacles/obstacleLong.png");
         this.load.image("flames", "./assets/test-flames.png");
+        this.load.image('water', './assets/Background/Background.png');
+        this.load.image('fish', './assets/Background/Fish.png');
+        this.load.image('waves', './assets/Background/Waves.png');
     }
 
     create() {
         this.obstacleSpeed = 250;
         this.obstacleSpeedMax = 550;
-        this.bounceSpeed = 5;
+        this.bounceSpeed = 7;
 
+        this.add.sprite(game.config.width / 2, game.config.height / 2, 'water');
+        this.fish = this.add.tileSprite(0, 0, 480, 800, 'fish').setOrigin(0, 0);
+        this.waves = this.add.tileSprite(0, 0, 480, 800, 'waves').setOrigin(0, 0);
         // add keybinds
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
@@ -67,7 +73,7 @@ class Play extends Phaser.Scene {
 
         // triggers a tsunami event once every minute
         this.tsunamiTimer = this.time.addEvent({
-            delay: 100000,
+            delay: 60000,
             callback: this.tsunamiTrigger,
             callbackScope: this,
             loop: true
@@ -104,6 +110,11 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 275
         }
+
+        // move the tile sprites
+        this.waves.tilePositionY -= 0.5;
+        this.fish.tilePositionY -= 1;
+
         // if game over then do stuff (!!!  WOULD BE BETTER TO CREATE A GAME OVER SCENE  !!!)
         if(this.gameOver) {
             this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', overText). setOrigin(0.5); 
