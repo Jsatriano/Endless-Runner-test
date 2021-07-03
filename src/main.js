@@ -1,5 +1,9 @@
 // TO DO:
 // - increasing speed as game goes on
+// - polish collisions (low prio)
+// - fix x-axis spawn location to always fit in frame
+// - make tsunami event
+// - fix game over event
 
 let config = {
     type: Phaser.CANVAS,
