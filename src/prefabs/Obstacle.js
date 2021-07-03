@@ -1,6 +1,6 @@
 class Obstacle extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, velocity) {
-        super(scene, Phaser.Math.Between(0 + borderUISize, game.config.width - 32), 0 - borderUISize * 2, 'ob');    //change x and y parameters later
+        super(scene, Phaser.Math.Between(40, game.config.width - 32), 0 - borderUISize * 2, 'ob');    //change x and y parameters later
 
         // add to the scene
         scene.add.existing(this);
@@ -15,11 +15,19 @@ class Obstacle extends Phaser.Physics.Arcade.Sprite {
 
     update() {
         // once a barrier reaches a certain point, spawn a new one
-        if(this.newObstacle && this.y > game.config.height / 2) {
-            this.newObstacle = false;
-            this.scene.addObstacle(this.parent, this.velocity);
+        if(!tsunamiDelay) {
+            if(this.newObstacle && this.y > game.config.height / 2) {
+                this.newObstacle = false;
+                this.scene.addObstacle(this.parent, this.velocity);
+            }
         }
-
+        if(tsunamiEvent) {
+            console.log("hi");
+            if(this.newObstacle && this.y > game.config.height / 5) {
+                this.newObstacle = false;
+                this.scene.addObstacle(this.parent, this.velocity);
+            }
+        }
         // destroy obstacle once off screen
         if(this.y > game.config.height + this.height) {
             this.destroy();
