@@ -8,7 +8,7 @@
 let config = {
     type: Phaser.CANVAS,
     width: 480,
-    height: 640,
+    height: 800,
     scale: {
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
@@ -30,7 +30,22 @@ let game = new Phaser.Game(config);
 let borderUISize = game.config.height / 100;
 let borderPadding = borderUISize / 3;
 
-//reserve keyboard variables
+//reserve variables
 let keyLEFT, keyRIGHT, keyUP, keyDOWN;
 let player = null;
 const playerVelocity = 150;
+let tsunamiEvent = false;
+let tsunamiDelay = false;
+
+// create config for the timer text
+let timerConfig = {
+    fontFamily: 'Verdana',
+    fontSize: '32px',
+    backgroundColor: '#5AB1BB',
+    color: '#4E6766',
+    align: 'center',
+    padding: {
+      top: 5,
+      bottom: 5,
+    },
+}
