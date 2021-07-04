@@ -22,7 +22,6 @@ class Obstacle extends Phaser.Physics.Arcade.Sprite {
             }
         }
         if(tsunamiEvent) {
-            console.log("hi");
             if(this.newObstacle && this.y > game.config.height / 5) {
                 this.newObstacle = false;
                 this.scene.addObstacle(this.parent, this.velocity);

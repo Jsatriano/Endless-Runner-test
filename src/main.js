@@ -21,7 +21,7 @@ let config = {
             }
         }
     },
-    scene: [Menu, Play]
+    scene: [Menu, Play, GameOver]
 }
 
 let game = new Phaser.Game(config);
@@ -36,6 +36,9 @@ let player = null;
 const playerVelocity = 150;
 let tsunamiEvent = false;
 let tsunamiDelay = false;
+let score;
+let highScore;
+let newHighScore = false;
 
 // create config for the timer text
 let timerConfig = {

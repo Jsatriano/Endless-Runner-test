@@ -10,12 +10,14 @@ class Play extends Phaser.Scene {
         this.load.image('water', './assets/Background/Background.png');
         this.load.image('fish', './assets/Background/Fish.png');
         this.load.image('waves', './assets/Background/Waves.png');
+        this.load.image('particle', './assets/spark.png');
     }
 
     create() {
         this.obstacleSpeed = 250;
         this.obstacleSpeedMax = 550;
         this.bounceSpeed = 7;
+        score = 0;
 
         this.add.sprite(game.config.width / 2, game.config.height / 2, 'water');
         this.fish = this.add.tileSprite(0, 0, 480, 800, 'fish').setOrigin(0, 0);
@@ -27,7 +29,7 @@ class Play extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         
         //create player
-        player = this.physics.add.sprite(32, game.config.width / 2, "phoenix").setOrigin(0, 0);
+        player = this.physics.add.sprite(game.config.width / 2 - 32, game.config.height - (borderUISize + 250), "phoenix").setOrigin(0, 0);
         player.setCollideWorldBounds(true);
         player.setBounce(0.5);
         player.setImmovable();
@@ -58,10 +60,10 @@ class Play extends Phaser.Scene {
         this.timer = this.time.addEvent({delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
         
         // play borders
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0x446BC5).setOrigin(0, 0);
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x446BC5).setOrigin(0, 0);
+        this.add.rectangle(0, 0, borderUISize, game.config.height, 0x446BC5).setOrigin(0, 0);
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x446BC5).setOrigin(0, 0);
 
         // increases difficulty of the game over time
         this.difficultyTimer = this.time.addEvent({
@@ -122,7 +124,19 @@ class Play extends Phaser.Scene {
 
         // game over if the player touches the wall of death!
         if(this.collisionCheck(player, this.flameWall)) {
+            this.cameras.main.shake(10, 0.0075);    // shake the camera!
+            //add a particle emmiter that triggers on death
+            let sparks = this.add.particles('particle');    
+            let emitter = sparks.createEmitter();
+
+            emitter.setPosition(player.x + 32, player.y + 32);
+            emitter.setSpeed(50);
+            emitter.setScale(0.7);
+            emitter.setLifespan(800);
+            emitter.maxParticles = 1;
+            player.destroy();
             this.gameOver = true;
+            this.time.delayedCall(2000, () => { this.scene.start('gameoverScene'); });
         }
 
 
@@ -188,6 +202,7 @@ class Play extends Phaser.Scene {
     onEvent () {
         if(!this.gameOver) {
             this.initialTime += 1;
+            score += 1;
             this.textTimer.setText(this.formatTime(this.initialTime));
         }
     }
