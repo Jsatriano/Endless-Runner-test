@@ -6,7 +6,7 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.image("phoenix", "./assets/Phoenix.png");
         this.load.image("ob", "./assets/Obstacles/obstacleLong.png");
-        this.load.image("flames", "./assets/test-flames.png");
+        this.load.image("monster", "./assets/water_monster.png");
         this.load.image('water', './assets/Background/Background.png');
         this.load.image('fish', './assets/Background/Fish.png');
         this.load.image('waves', './assets/Background/Waves.png');
@@ -50,8 +50,9 @@ class Play extends Phaser.Scene {
         });
 
         // create flame wall
-        this.flameWall = new Flames(this, 0, game.config.height - (borderUISize + borderPadding), "flames").setOrigin(0, 0.5);
-
+        this.waterMonster = new Monster(this, 0, game.config.height - (borderUISize + 32), "monster").setOrigin(0, 0.5);
+        this.waterMonster.depth = 1;
+        
         // variable for the in game clock
         this.initialTime = 0;
 
@@ -60,10 +61,15 @@ class Play extends Phaser.Scene {
         this.timer = this.time.addEvent({delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
         
         // play borders
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0x446BC5).setOrigin(0, 0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x446BC5).setOrigin(0, 0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0x446BC5).setOrigin(0, 0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x446BC5).setOrigin(0, 0);
+        this.rec1 = this.add.rectangle(0, 0, game.config.width, borderUISize, 0x446BC5).setOrigin(0, 0);
+        this.rec2 = this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x446BC5).setOrigin(0, 0);
+        this.rec3 = this.add.rectangle(0, 0, borderUISize, game.config.height, 0x446BC5).setOrigin(0, 0);
+        this.rec4 = this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x446BC5).setOrigin(0, 0);
+        // increase the depth of the borders so they always appear above other game objects
+        this.rec1.depth = 2;
+        this.rec2.depth = 2;
+        this.rec3.depth = 2;
+        this.rec4.depth = 2;
 
         // increases difficulty of the game over time
         this.difficultyTimer = this.time.addEvent({
@@ -117,26 +123,9 @@ class Play extends Phaser.Scene {
         this.waves.tilePositionY -= 0.5;
         this.fish.tilePositionY -= 1;
 
-        // if game over then do stuff (!!!  WOULD BE BETTER TO CREATE A GAME OVER SCENE  !!!)
-        if(this.gameOver) {
-            this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', overText). setOrigin(0.5); 
-        }
-
         // game over if the player touches the wall of death!
-        if(this.collisionCheck(player, this.flameWall)) {
-            this.cameras.main.shake(10, 0.0075);    // shake the camera!
-            //add a particle emmiter that triggers on death
-            let sparks = this.add.particles('particle');    
-            let emitter = sparks.createEmitter();
-
-            emitter.setPosition(player.x + 32, player.y + 32);
-            emitter.setSpeed(50);
-            emitter.setScale(0.7);
-            emitter.setLifespan(800);
-            emitter.maxParticles = 1;
-            player.destroy();
-            this.gameOver = true;
-            this.time.delayedCall(2000, () => { this.scene.start('gameoverScene'); });
+        if(this.collisionCheck(player, this.waterMonster)) {
+            this.playerDeath();
         }
 
 
@@ -173,8 +162,10 @@ class Play extends Phaser.Scene {
     // if player hits an obstacle, sets bounce = true to trigger bounce in update() func
     playerCollision() {
         player.bounce = true;
+        this.sound.play('sfx_hit');
     }
 
+    // simple collision check logic
     collisionCheck(player, object) {
         if(player.x < object.x + object.width &&
             player.x + player.width > object.x &&
@@ -234,7 +225,7 @@ class Play extends Phaser.Scene {
             tsunamiEvent = true;    // turns tsunami event on after 4 sec delay
         });
         
-        this.time.delayedCall(10000, () => {    //turns tsunami event off and allows regular obstacle spawning to continue
+        this.time.delayedCall(8000, () => {    //turns tsunami event off and allows regular obstacle spawning to continue
             tsunamiEvent = false;
             tsunamiDelay = false;
         });
@@ -249,5 +240,24 @@ class Play extends Phaser.Scene {
             this.tsunamiText.alpha = 1;
             this.warningText.alpha = 1;
         }
+    }
+
+    playerDeath() {
+        this.cameras.main.shake(10, 0.0075);    // shake the camera!
+            this.sound.play('sfx_death');
+            //add a particle emmiter that triggers on death
+            let sparks = this.add.particles('particle');    
+            let emitter = sparks.createEmitter();
+
+            emitter.setPosition(player.x + 32, player.y + 32);
+            emitter.setSpeed(50);
+            emitter.setScale(0.7);
+            emitter.setLifespan(800);
+            //emitter.maxParticles = 1;
+            player.setPosition(-100, -100)
+            player.destroy();
+            
+            this.gameOver = true;
+            this.time.delayedCall(2000, () => { this.scene.start('gameoverScene'); });
     }
 }

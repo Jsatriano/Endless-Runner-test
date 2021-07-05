@@ -31,7 +31,7 @@ let borderUISize = game.config.height / 100;
 let borderPadding = borderUISize / 3;
 
 //reserve variables
-let keyLEFT, keyRIGHT, keyUP, keyDOWN;
+let keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE, keyR, keyBACKSPACE;
 let player = null;
 const playerVelocity = 150;
 let tsunamiEvent = false;
@@ -44,8 +44,8 @@ let newHighScore = false;
 let timerConfig = {
     fontFamily: 'Verdana',
     fontSize: '32px',
-    backgroundColor: '#5AB1BB',
-    color: '#4E6766',
+    backgroundColor: '#FFDB70',
+    color: '#FF751F',
     align: 'center',
     padding: {
       top: 5,

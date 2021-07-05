@@ -1,8 +1,9 @@
-class Flames extends Phaser.GameObjects.Sprite {
+class Monster extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
 
         // add to the scene
         scene.add.existing(this);
+
     }
 }
