@@ -7,9 +7,13 @@ class Menu extends Phaser.Scene {
         this.load.audio("sfx_select", "./assets/sfx/select.wav");
         this.load.audio("sfx_hit", "./assets/sfx/waves.wav");
         this.load.audio("sfx_death", "./assets/sfx/death.wav");
+        this.load.image('menu', './assets/Background/StartScreen/game_start.png');
     }
 
     create() {
+        // loads menu image
+        this.menu = this.add.tileSprite(0, 0, 480, 800, 'menu').setOrigin(0,0);
+
         // create keybinds
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
