@@ -23,6 +23,14 @@ class Play extends Phaser.Scene {
         tsunamiDelay = false;
         score = 0;
 
+        // music set up
+        this.music = this.sound.add('sfx_music', {
+            mute: false,
+            volume: 0.2,
+            loop: true
+        });
+        this.music.play();
+
         // create animation sequence for phoenix
         this.anims.create({
             key: 'phoenixMove',
@@ -127,7 +135,6 @@ class Play extends Phaser.Scene {
         if(this.collisionCheck(player, this.waterMonster)) {
             this.playerDeath();
         }
-
 
         // constantly updates objects every frame
         if(!this.gameOver) {
@@ -250,10 +257,19 @@ class Play extends Phaser.Scene {
 
     playerDeath() {
         this.cameras.main.shake(10, 0.0075);    // shake the camera!
-        this.sound.play('sfx_death');
+        this.sound.get('sfx_music').stop();
+        this.sound.play('sfx_death', {volume: 0.2});
         //add a particle emmiter that triggers on death
         let sparks = this.add.particles('particle');    
         let emitter = sparks.createEmitter();
+
+        // add tween to fade out audio
+        this.tweens.add({
+            targets: this.music,
+            volume: 0,
+            ease: 'Linear',
+            duration: 2000,
+        });
 
         emitter.setPosition(player.x + 32, player.y + 32);
         emitter.setSpeed(50);
