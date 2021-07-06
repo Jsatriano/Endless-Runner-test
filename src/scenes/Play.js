@@ -4,7 +4,8 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("phoenix", "./assets/Phoenix.png");
+        // preload all assets that will be used
+        this.load.spritesheet("phoenix", "./assets/Phoenix_anim.png", {frameWidth: 80, frameHeight: 72, startFrame: 0, endFrame: 4 });
         this.load.image("ob", "./assets/Obstacles/obstacleLong.png");
         this.load.image("monster", "./assets/water_monster.png");
         this.load.image('water', './assets/Background/Background.png');
@@ -14,12 +15,21 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        // reset varibles needed when replaying
         this.obstacleSpeed = 250;
         this.obstacleSpeedMax = 550;
         this.bounceSpeed = 7;
         tsunamiEvent = false;
         tsunamiDelay = false;
         score = 0;
+
+        // create animation sequence for phoenix
+        this.anims.create({
+            key: 'phoenixMove',
+            frames: this.anims.generateFrameNumbers('phoenix', { start: 0, end: 4, first: 0}),
+            frameRate: 8,
+            loop: true
+        });
 
         this.add.sprite(game.config.width / 2, game.config.height / 2, 'water');
         this.fish = this.add.tileSprite(0, 0, 480, 800, 'fish').setOrigin(0, 0);
@@ -31,7 +41,7 @@ class Play extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         
         //create player
-        player = this.physics.add.sprite(game.config.width / 2 - 32, game.config.height - (borderUISize + 250), "phoenix").setOrigin(0, 0);
+        player = this.physics.add.sprite(game.config.width / 2 - 32, game.config.height - (borderUISize + 250), 'phoenix').setOrigin(0, 0);
         player.setCollideWorldBounds(true);
         player.setBounce(0.5);
         player.setImmovable();
@@ -58,9 +68,10 @@ class Play extends Phaser.Scene {
         // variable for the in game clock
         this.initialTime = 0;
 
-        // adds a clock to the game and updates it every second
+        // adds a clock to the game and updates it every second --- credit: Hazim Awad ---
         this.textTimer = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding, this.formatTime(this.initialTime), timerConfig);
         this.timer = this.time.addEvent({delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
+        this.textTimer.depth = 1;
         
         // play borders
         this.rec1 = this.add.rectangle(0, 0, game.config.width, borderUISize, 0x446BC5).setOrigin(0, 0);
@@ -89,7 +100,7 @@ class Play extends Phaser.Scene {
             loop: true
         });
 
-        // create text for tsunami event
+        // create text for tsunami event 
         this.tsunamiText = this.add.text(game.config.width / 2, game.config.height / 2 - 64, 'TSUNAMI', timerConfig). setOrigin(0.5);
         this.warningText = this.add.text(game.config.width / 2, game.config.height / 2, 'WARNING', timerConfig). setOrigin(0.5);
         this.textFlicker();
@@ -108,19 +119,6 @@ class Play extends Phaser.Scene {
     }
 
     update(){
-        let overText = {
-            fontFamily: 'Verdana',
-            fontSize: '32px',
-            backgroundColor: '#5AB1BB',
-            color: '#4E6766',
-            align: 'center',
-            padding: {
-              top: 5,
-              bottom: 5,
-            },
-            fixedWidth: 275
-        }
-
         // move the tile sprites
         this.waves.tilePositionY -= 0.5;
         this.fish.tilePositionY -= 1;
@@ -134,7 +132,7 @@ class Play extends Phaser.Scene {
         // constantly updates objects every frame
         if(!this.gameOver) {
             if(keyLEFT.isDown) {
-                player.body.velocity.x -= playerVelocity; 
+                player.body.velocity.x -= playerVelocity;
             } else if(keyRIGHT.isDown) {
                 player.body.velocity.x += playerVelocity;
             }
@@ -142,7 +140,6 @@ class Play extends Phaser.Scene {
             if(!player.bounce) {
                 if(keyUP.isDown) {
                     player.body.velocity.y -= playerVelocity;
-        
                 }else if(keyDOWN.isDown) {
                     player.body.velocity.y += playerVelocity;
                 }
@@ -151,6 +148,11 @@ class Play extends Phaser.Scene {
             this.physics.world.collide(player, this.obstacleGroup, this.playerCollision, null, this); 
         } 
 
+        // play the phoenix animation
+        if(Phaser.Input.Keyboard.JustDown(keyLEFT) || Phaser.Input.Keyboard.JustDown(keyRIGHT)
+           || Phaser.Input.Keyboard.JustDown(keyUP) || Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+            player.anims.play('phoenixMove');
+        }
         // triggers if the player collides with an obstacle (bounces player back)
         if(player.bounce) {
             player.y += this.bounceSpeed;
@@ -164,7 +166,7 @@ class Play extends Phaser.Scene {
     // if player hits an obstacle, sets bounce = true to trigger bounce in update() func
     playerCollision() {
         player.bounce = true;
-        this.sound.play('sfx_hit');
+        this.sound.play('sfx_hit', {volume: 0.3});
     }
 
     // simple collision check logic
@@ -191,7 +193,7 @@ class Play extends Phaser.Scene {
         return `${this.minutes}:${this.partInSeconds}`;
     }
 
-    // updates the in game clock every second
+    // updates the in game clock every second --- credit: Hazim Awad ---
     onEvent () {
         if(!this.gameOver) {
             this.initialTime += 1;
@@ -200,7 +202,7 @@ class Play extends Phaser.Scene {
         }
     }
 
-    // makes the obstacles faster
+    // makes the obstacles faster --- credit: Hazim Awad ---
     difficultyIncrease() {
         if(this.obstacleSpeed <= this.obstacleSpeedMax) {
             this.obstacleSpeed += 50;

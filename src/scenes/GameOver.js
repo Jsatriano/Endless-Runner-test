@@ -39,8 +39,8 @@ class GameOver extends Phaser.Scene {
         highScore = this.formatTime(highScore);
         
         // add highscore and score text
-        this.add.text(game.config.width / 2, game.config.height / 2, `Highscore: ${highScore}`, menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width / 2, game.config.height / 2 + 64, `Score: ${score}`, menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width / 2, game.config.height / 2, `${highScore}`, menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width / 2, game.config.height / 2 + 64, `${score}`, menuConfig).setOrigin(0.5);
 
         // add keybinds
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
