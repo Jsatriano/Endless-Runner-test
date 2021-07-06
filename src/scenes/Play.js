@@ -248,20 +248,20 @@ class Play extends Phaser.Scene {
 
     playerDeath() {
         this.cameras.main.shake(10, 0.0075);    // shake the camera!
-            this.sound.play('sfx_death');
-            //add a particle emmiter that triggers on death
-            let sparks = this.add.particles('particle');    
-            let emitter = sparks.createEmitter();
+        this.sound.play('sfx_death');
+        //add a particle emmiter that triggers on death
+        let sparks = this.add.particles('particle');    
+        let emitter = sparks.createEmitter();
 
-            emitter.setPosition(player.x + 32, player.y + 32);
-            emitter.setSpeed(50);
-            emitter.setScale(0.7);
-            emitter.setLifespan(800);
-            //emitter.maxParticles = 1;
-            player.setPosition(-100, -100)
-            player.destroy();
+        emitter.setPosition(player.x + 32, player.y + 32);
+        emitter.setSpeed(50);
+        emitter.setScale(0.7);
+        emitter.setLifespan(800);
+        //emitter.maxParticles = 1;
+        player.setPosition(-100, -100)
+        player.destroy();
             
-            this.gameOver = true;
-            this.time.delayedCall(2000, () => { this.scene.start('gameoverScene'); });
+        this.gameOver = true;
+        this.time.delayedCall(2000, () => { this.scene.start('gameoverScene'); });
     }
 }
