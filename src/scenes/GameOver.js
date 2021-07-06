@@ -14,8 +14,8 @@ class GameOver extends Phaser.Scene {
         let menuConfig = {
             fontFamily: 'Verdana',
             fontSize: '32px',
-            backgroundColor: '#5AB1BB',
-            color: '#4E6766',
+            backgroundColor: '#5CA6EB',
+            color: '#145C9E',
             align: 'center',
             padding: {
               top: 5,
