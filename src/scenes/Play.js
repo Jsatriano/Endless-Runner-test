@@ -151,7 +151,7 @@ class Play extends Phaser.Scene {
         // play the phoenix animation
         if(Phaser.Input.Keyboard.JustDown(keyLEFT) || Phaser.Input.Keyboard.JustDown(keyRIGHT)
            || Phaser.Input.Keyboard.JustDown(keyUP) || Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-            player.anims.play('phoenixMove');
+               player.anims.play('phoenixMove');
         }
         // triggers if the player collides with an obstacle (bounces player back)
         if(player.bounce) {
