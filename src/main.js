@@ -1,8 +1,4 @@
 // TO DO:
-// - increasing speed as game goes on
-// - polish collisions (low prio)
-// - fix x-axis spawn location to always fit in frame
-// - make tsunami event
 // - fix game over event
 
 let config = {
@@ -21,7 +17,7 @@ let config = {
             }
         }
     },
-    scene: [Menu, Play, GameOver]
+    scene: [Menu, Play, GameOver, Credits]
 }
 
 let game = new Phaser.Game(config);
@@ -30,8 +26,8 @@ let game = new Phaser.Game(config);
 let borderUISize = game.config.height / 100;
 let borderPadding = borderUISize / 3;
 
-//reserve variables
-let keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE, keyR, keyBACKSPACE;
+//reserve global variables
+let keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE, keyBACKSPACE;
 let player = null;
 const playerVelocity = 150;
 let tsunamiEvent = false;

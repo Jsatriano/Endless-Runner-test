@@ -43,7 +43,7 @@ class GameOver extends Phaser.Scene {
         this.add.text(game.config.width / 2, game.config.height / 2 + 64, `Score: ${score}`, menuConfig).setOrigin(0.5);
 
         // add keybinds
-        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyBACKSPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.BACKSPACE);
 
         // play borders
@@ -54,7 +54,7 @@ class GameOver extends Phaser.Scene {
     }
 
     update() {
-        if(Phaser.Input.Keyboard.JustDown(keyR)) {
+        if(Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.scene.start("playScene");
         } 
         if(Phaser.Input.Keyboard.JustDown(keyBACKSPACE)) {

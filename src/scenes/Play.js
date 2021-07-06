@@ -17,6 +17,8 @@ class Play extends Phaser.Scene {
         this.obstacleSpeed = 250;
         this.obstacleSpeedMax = 550;
         this.bounceSpeed = 7;
+        tsunamiEvent = false;
+        tsunamiDelay = false;
         score = 0;
 
         this.add.sprite(game.config.width / 2, game.config.height / 2, 'water');
@@ -88,8 +90,8 @@ class Play extends Phaser.Scene {
         });
 
         // create text for tsunami event
-        this.tsunamiText = this.add.text(game.config.width / 2, game.config.height / 2, 'TSUNAMI', timerConfig). setOrigin(0.5);
-        this.warningText = this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'WARNING', timerConfig). setOrigin(0.5);
+        this.tsunamiText = this.add.text(game.config.width / 2, game.config.height / 2 - 64, 'TSUNAMI', timerConfig). setOrigin(0.5);
+        this.warningText = this.add.text(game.config.width / 2, game.config.height / 2, 'WARNING', timerConfig). setOrigin(0.5);
         this.textFlicker();
         
         // game over flag (when true, game ends)
@@ -201,7 +203,7 @@ class Play extends Phaser.Scene {
     // makes the obstacles faster
     difficultyIncrease() {
         if(this.obstacleSpeed <= this.obstacleSpeedMax) {
-            this.obstacleSpeed += 75;
+            this.obstacleSpeed += 50;
         }
     }
 
@@ -224,7 +226,7 @@ class Play extends Phaser.Scene {
             this.addObstacle();
             tsunamiEvent = true;    // turns tsunami event on after 4 sec delay
         });
-        
+            
         this.time.delayedCall(8000, () => {    //turns tsunami event off and allows regular obstacle spawning to continue
             tsunamiEvent = false;
             tsunamiDelay = false;
